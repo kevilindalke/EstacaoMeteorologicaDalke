@@ -1,51 +1,175 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estação Meteorológica Dalke</title>
 
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Estação Meteorológica Dalke</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+
+margin:0;
+background:#0b1622;
+font-family:Poppins;
+color:white;
+
+}
+
+header{
+
+padding:25px;
+text-align:center;
+background:#13273d;
+font-size:28px;
+font-weight:bold;
+
+}
+
+.cards{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+padding:30px;
+
+}
+
+.card{
+
+background:#1c324d;
+border-radius:20px;
+padding:25px;
+text-align:center;
+box-shadow:0px 0px 20px rgba(0,0,0,.3);
+
+}
+
+.valor{
+
+font-size:42px;
+font-weight:bold;
+
+}
+
+.titulo{
+
+font-size:18px;
+opacity:.8;
+
+}
+
+footer{
+
+text-align:center;
+padding:20px;
+opacity:.6;
+
+}
+
+</style>
+
 </head>
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+
+const firebaseConfig = {
+
+  apiKey: "AIzaSyCKSN_70sgDudhybvCD6Rbir4gsRbir4gs-s3a1oE",
+  authDomain: "estacaometeorologicadalke.firebaseapp.com",
+  databaseURL: "https://estacaometeorologicadalke-default-rtdb.firebaseio.com",
+  projectId: "estacaometeorologicadalke",
+  storageBucket: "estacaometeorologicadalke.firebasestorage.app",
+  messagingSenderId: "561229669100",
+  appId: "1:561229669100:web:f61659288e128164e5fbc9"
+
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const dadosRef = ref(db, "estacao");
+
+onValue(dadosRef, (snapshot) => {
+
+  const dados = snapshot.val();
+
+  if (!dados) return;
+
+  document.getElementById("temperatura").innerHTML = dados.temperatura + " °C";
+  document.getElementById("umidade").innerHTML = dados.umidade + " %";
+  document.getElementById("pressao").innerHTML = dados.pressao + " hPa";
+  document.getElementById("data").innerHTML = dados.data;
+  document.getElementById("hora").innerHTML = dados.hora;
+
+});
+
+</script>
 
 <body>
 
-<div class="container">
+<header>
 
-    <h1>🌤 Estação Meteorológica Dalke</h1>
+🌦 Estação Meteorológica Dalke
 
-    <p class="subtitulo">
-        Santa Rita • Paraguai
-    </p>
+</header>
 
-    <div class="card">
-        <h2>📅 Data</h2>
-        <p id="data">24/07/2026</p>
-    </div>
+<div class="cards">
 
-    <div class="card">
-        <h2>🕒 Hora</h2>
-        <p id="hora">18:35</p>
-    </div>
+<div class="card">
 
-    <div class="card">
-        <h2>🌡 Temperatura</h2>
-        <p id="temp">24.8 °C</p>
-    </div>
+<div class="titulo">🌡 Temperatura</div>
 
-    <div class="card">
-        <h2>💧 Umidade</h2>
-        <p id="umidade">68 %</p>
-    </div>
-
-    <div class="card">
-        <h2>📈 Pressão</h2>
-        <p id="pressao">1013 hPa</p>
-    </div>
+<div id="temperatura" class="valor">-- °C</div>
 
 </div>
 
-<script src="script.js"></script>
+<div class="card">
+
+<div class="titulo">💧 Umidade</div>
+
+<div id="umidade" class="valor">-- %</div>
+
+</div>
+
+<div class="card">
+
+<div class="titulo">📈 Pressão</div>
+
+<div id="pressao" class="valor">---- hPa</div>
+
+</div>
+
+<div class="card">
+
+<div class="titulo">📅 Data</div>
+
+<div id="data" class="valor" style="font-size:26px;">--/--/----</div>
+
+</div>
+
+<div class="card">
+
+<div class="titulo">🕒 Hora</div>
+
+<div id="hora" class="valor">--:--</div>
+
+</div>
+
+</div>
+
+<footer>
+
+Atualização automática em tempo real
+
+</footer>
 
 </body>
 </html>
