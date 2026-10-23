@@ -1,79 +1,80 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Estação Meteorológica Dalke</title>
-
-<link rel="stylesheet" href="style.css">
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estação Meteorológica Dalke</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
-
 <body>
+  <header>
+    <h1>🌦 Estação Meteorológica Dalke</h1>
+    <p>Santa Rita • Alto Paraná • Paraguay</p>
+  </header>
 
-<header>
+  <main class="cards">
+    <div class="card">
+      <span>🌡</span>
+      <h2>Temperatura</h2>
+      <p id="temperatura">--.- °C</p>
+    </div>
 
-<h1>🌦 Estação Meteorológica Dalke</h1>
+    <div class="card">
+      <span>💧</span>
+      <h2>Umidade</h2>
+      <p id="umidade">-- %</p>
+    </div>
 
-<p>Santa Rita • Alto Paraná • Paraguay</p>
+    <div class="card">
+      <span>📈</span>
+      <h2>Pressão local</h2>
+      <p id="pressaoLocal">---- hPa</p>
+    </div>
 
-</header>
+    <div class="card">
+      <span>🌐</span>
+      <h2>Pressão ao nível do mar</h2>
+      <p id="pressao">---- hPa</p>
+    </div>
 
-<main class="cards">
+    <div class="card">
+      <span>🌧️</span>
+      <h2>Chuva acumulada</h2>
+      <p id="chuva">--.-- mm</p>
+      <small>Desde que a estação foi ligada</small>
+    </div>
 
-<div class="card">
-<span>🌡</span>
-<h2>Temperatura</h2>
-<p id="temperatura">--.- °C</p>
-</div>
+    <div class="card">
+      <span>🔄</span>
+      <h2>Basculadas</h2>
+      <p id="basculadas">--</p>
+      <small>Desde que a estação foi ligada</small>
+    </div>
 
-<div class="card">
-<span>💧</span>
-<h2>Umidade</h2>
-<p id="umidade">-- %</p>
-</div>
+    <div class="card">
+      <span>🕒</span>
+      <h2>Hora</h2>
+      <p id="hora">--:--</p>
+    </div>
 
-<div class="card">
-<span>📈</span>
-<h2>Pressão</h2>
-<p id="pressao">---- hPa</p>
-</div>
+    <div class="card">
+      <span>📅</span>
+      <h2>Data</h2>
+      <p id="data">--/--/----</p>
+    </div>
 
-<div class="card">
-<span>🕒</span>
-<h2>Hora</h2>
-<p id="hora">--:--</p>
-</div>
+    <div class="card">
+      <span>📶</span>
+      <h2>Status</h2>
+      <p id="status">Conectando...</p>
+      <small id="ultimaAtualizacao">Aguardando dados</small>
+    </div>
+  </main>
 
-<div class="card">
-<span>📅</span>
-<h2>Data</h2>
-<p id="data">--/--/----</p>
-</div>
-
-<div class="card">
-<span>📶</span>
-<h2>Status</h2>
-<p id="status">Online</p>
-</div>
-
-</main>
-
-<footer>
-
-Projeto desenvolvido por Kevilin Dalke
-
-</footer>
-
-<script type="module" src="script.js"></script>
-
+  <footer>Projeto desenvolvido por Kevilin Dalke</footer>
+  <script type="module" src="script.js"></script>
 </body>
 </html>

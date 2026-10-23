@@ -2,9 +2,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
 
-// A apiKey do Firebase não é secreta, ela é feita para ficar visível
-// no navegador. Quem protege seus dados de verdade são as REGRAS do
-// Realtime Database (Firebase Console > Realtime Database > Regras).
+// A apiKey do Firebase é pública no navegador. O acesso aos dados é controlado
+// pelas regras do Realtime Database.
 const firebaseConfig = {
   apiKey: "AIzaSyCKSN_70sgDudhybvCD6Rbir4gs-s3a1oE",
   databaseURL: "https://estacaometeorologicadalke-default-rtdb.firebaseio.com/"
@@ -17,40 +16,68 @@ const estacaoRef = ref(db, "estacao/atual");
 // ================== ELEMENTOS DA PÁGINA ==================
 const elTemperatura = document.getElementById("temperatura");
 const elUmidade = document.getElementById("umidade");
-const elPressao = document.getElementById("pressao");
+const elPressaoLocal = document.getElementById("pressaoLocal");
+const elPressaoNivelMar = document.getElementById("pressao");
+const elChuva = document.getElementById("chuva");
+const elBasculadas = document.getElementById("basculadas");
 const elHora = document.getElementById("hora");
 const elData = document.getElementById("data");
 const elStatus = document.getElementById("status");
+const elUltimaAtualizacao = document.getElementById("ultimaAtualizacao");
 
 let ultimaAtualizacao = 0;
 
-// ================== OUVINTE EM TEMPO REAL ==================
-// onValue roda toda vez que o nó "estacao/atual" muda no Firebase.
-// Ou seja: assim que a ESP32 grava um dado novo, a página atualiza
-// sozinha, sem F5 e sem precisar mais do IP local da estação.
+function formatarNumero(valor, casas, unidade, indisponivel) {
+  if (valor === undefined || valor === null || valor === "") {
+    return indisponivel;
+  }
+
+  const numero = Number(valor);
+  return Number.isFinite(numero)
+    ? numero.toFixed(casas) + unidade
+    : indisponivel;
+}
+
+// Atualiza os elementos assim que a estação grava dados no caminho estacao/atual.
 onValue(estacaoRef, (snapshot) => {
   const dados = snapshot.val();
-  if (!dados) return;
 
-  elTemperatura.innerHTML = Number(dados.temperatura).toFixed(1) + " °C";
-  elUmidade.innerHTML = dados.umidade + " %";
-  elPressao.innerHTML = Number(dados.pressaoNivelMar).toFixed(1) + " hPa";
-  elHora.innerHTML = dados.hora;
-  elData.innerHTML = dados.data;
-  elStatus.innerHTML = "🟢 Online";
+  if (!dados || typeof dados !== "object") {
+    elStatus.textContent = "Sem dados";
+    elUltimaAtualizacao.textContent = "Aguardando a primeira leitura";
+    return;
+  }
+
+  elTemperatura.textContent = formatarNumero(dados.temperatura, 1, " °C", "--.- °C");
+  elUmidade.textContent = formatarNumero(dados.umidade, 0, " %", "-- %");
+  elPressaoLocal.textContent = formatarNumero(dados.pressaoLocal, 1, " hPa", "---- hPa");
+  elPressaoNivelMar.textContent = formatarNumero(dados.pressaoNivelMar, 1, " hPa", "---- hPa");
+  elChuva.textContent = formatarNumero(dados.chuvaMm, 2, " mm", "--.-- mm");
+
+  const numeroBasculadas = Number(dados.basculadas);
+  elBasculadas.textContent = dados.basculadas !== undefined &&
+      dados.basculadas !== null && Number.isFinite(numeroBasculadas)
+    ? Math.max(0, Math.trunc(numeroBasculadas)).toLocaleString("pt-BR")
+    : "--";
+
+  elHora.textContent = dados.hora ?? "--:--";
+  elData.textContent = dados.data ?? "--/--/----";
+  elStatus.textContent = "🟢 Online";
+  elUltimaAtualizacao.textContent =
+    "Última leitura: " + elHora.textContent + " • " + elData.textContent;
 
   ultimaAtualizacao = Date.now();
 }, (erro) => {
-  console.log(erro);
-  elStatus.innerHTML = "🔴 Offline";
+  console.error("Falha ao ler os dados da estação no Firebase:", erro);
+  elStatus.textContent = "🔴 Erro no Firebase";
+  elUltimaAtualizacao.textContent = "Verifique a conexão e as regras do banco";
 });
 
-// ================== DETECÇÃO DE ESP32 OFFLINE ==================
-// A ESP32 envia um dado novo a cada 10s. Se passar 30s sem nenhuma
-// atualização, mostra "Offline" (estação desligada ou sem Wi-Fi),
-// mesmo que o site continue conectado ao Firebase normalmente.
+// O firmware envia leituras a cada 10 segundos. Marca a estação offline
+// quando não chega nenhuma atualização por mais de 30 segundos.
 setInterval(() => {
   if (ultimaAtualizacao && Date.now() - ultimaAtualizacao > 30000) {
-    elStatus.innerHTML = "🔴 Offline";
+    elStatus.textContent = "🔴 Offline";
+    elUltimaAtualizacao.textContent = "Sem leitura nova há mais de 30 segundos";
   }
 }, 5000);
